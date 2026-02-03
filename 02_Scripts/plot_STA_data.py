@@ -214,16 +214,22 @@ for d in sorted((f for f in os.listdir(data_dir) if not f.startswith(".")), key=
 
                     # Re-index data
 
-                    reduced_df.set_index('Temp (C)', inplace = True)
-                    reduced_df = reduced_df.loc[51:]
-                    reduced_df = reduced_df[~reduced_df.index.duplicated(keep='first')]
+                    try:
+                        reduced_df.set_index('Temp (C)', inplace = True)
+                        reduced_df = reduced_df.loc[51:]
+                        reduced_df = reduced_df[~reduced_df.index.duplicated(keep='first')]
 
-                    reduced_df = reduced_df.reindex(reduced_df.index.union(np.arange(51, (max_lim+0.1), 0.1)))
-                    reduced_df = reduced_df.astype('float64')
-                    reduced_df.index = reduced_df.index.astype('float64')
-                    reduced_df = reduced_df.interpolate(method='cubic')
+                        new_index = pd.Index(np.arange(51, (max_lim+0.1), 0.1)).union(reduced_df.index)
+                        new_index = pd.Index(new_index.unique())
+                        reduced_df = reduced_df.reindex(new_index)
+                        reduced_df = reduced_df.astype('float64')
+                        reduced_df.index = reduced_df.index.astype('float64')
+                        reduced_df = reduced_df.interpolate(method='cubic')
 
-                    reduced_df = reduced_df.loc[np.arange(51, (max_lim + 0.1), 0.1)]
+                        reduced_df = reduced_df.loc[np.arange(51, (max_lim + 0.1), 0.1)]
+                    except ValueError as e:
+                        print(f"Skipping {material} {col_name} due to index error: {e}")
+                        continue
 
                     reduced_df['Normalized Mass'] = reduced_df.pop('nMass')
                     reduced_df['Heat Flow Rate (W/g)'] = reduced_df.pop('DSC/(mW/mg)')
@@ -280,7 +286,7 @@ for d in sorted((f for f in os.listdir(data_dir) if not f.startswith(".")), key=
                                 df_temp['DSC_corr'] = h
 
                                 melt_peak_df = df_temp.loc[onset_temp:melt_return]
-                                melting_enthalpy = integrate.trapz(melt_peak_df['DSC_corr'], melt_peak_df['time (s)'])
+                                melting_enthalpy = integrate.trapezoid(melt_peak_df['DSC_corr'], melt_peak_df['time (s)'])
                                 melt_enth.append(melting_enthalpy)
 
                     if data_df.empty:

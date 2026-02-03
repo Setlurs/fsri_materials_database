@@ -182,7 +182,7 @@ for d in sorted((f for f in os.listdir(data_dir) if not f.startswith(".") and f 
                     time_array = time_array[~np.isnan(time_array)]
                     time_array = np.unique(time_array)
 
-                    hoc_df_html.at['Heat of Combustion (MJ/kg)', col_name] = (integrate.trapz(y=data_array, x=time_array)) / 1000
+                    hoc_df_html.at['Heat of Combustion (MJ/kg)', col_name] = (integrate.trapezoid(y=data_array, x=time_array)) / 1000
 
                     # Alternative Baseline Correction (NOT CURRENTLY IMPLEMENTED)
                     x = reduced_df.index
@@ -198,7 +198,7 @@ for d in sorted((f for f in os.listdir(data_dir) if not f.startswith(".") and f 
 
                     data_array_alt = reduced_df[f'{col_name}_alt'].to_numpy()
 
-                    # hoc_df_html.at['Heat of Combustion [ALT] (MJ/kg)', col_name] = (integrate.trapz(y=data_array_alt, x=time_array)) / 1000
+                    # hoc_df_html.at['Heat of Combustion [ALT] (MJ/kg)', col_name] = (integrate.trapezoid(y=data_array_alt, x=time_array)) / 1000
 
         corrected_data = data_df.loc[:,all_col_names]
 

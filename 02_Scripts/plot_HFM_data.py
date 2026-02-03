@@ -229,10 +229,12 @@ for d in sorted((f for f in os.listdir(data_dir) if not f.startswith(".")), key=
             y_max = max(ymax, y_max)
             x_max = max(xmax, x_max)
 
-            ylims[0] = 0.05 * (math.floor(y_min/0.05)-1)
-            ylims[1] = 0.05 * (math.ceil(y_max/0.05)+1)
-            xlims[0] = 5 * (math.floor(x_min/5)-1)
-            xlims[1] = 5 * (math.ceil(x_max/5)+1)
+            if not math.isnan(y_min) and not math.isnan(y_max):
+                ylims[0] = 0.05 * (math.floor(y_min/0.05)-1)
+                ylims[1] = 0.05 * (math.ceil(y_max/0.05)+1)
+            if not math.isnan(x_min) and not math.isnan(x_max):
+                xlims[0] = 5 * (math.floor(x_min/5)-1)
+                xlims[1] = 5 * (math.ceil(x_max/5)+1)
 
             plot_dir = f'../03_Charts/{material}/HFM/'
 
