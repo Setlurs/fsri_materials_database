@@ -210,7 +210,7 @@ for d in sorted((f for f in os.listdir(data_dir) if not f.startswith(".") and f 
                 os.makedirs(plot_dir)
 
             format_and_save_plot(f'{plot_dir}{material}_HFM_{cond}_conductivity.html',material)
-            mat_status_df.loc[material, f'{cond}_k'] = 'True'
+            mat_status_df.loc[material, f'{cond}_k'] = True
 
 
             k_plot_data_cond = k_plot_data_cond.rename(columns = {f'{cond}_mean': 'Conductivity Mean (W/m-K)', f'{cond}_std': 'Standard Deviation (W/m-K)'})
@@ -320,7 +320,7 @@ for d in sorted((f for f in os.listdir(data_dir) if not f.startswith(".") and f 
             os.makedirs(plot_dir)
 
         format_and_save_plot(f'{plot_dir}{material}_HFM_{cond}_specific_heat.html',material)
-        mat_status_df.loc[material, f'{cond}_cp'] = 'True'
+        mat_status_df.loc[material, f'{cond}_cp'] = True
 
         c_plot_data_cond = c_plot_data_cond.rename(columns = {f'{cond}_mean': 'Specific Heat Mean (J/kg-K)', f'{cond}_std': 'Standard Deviation (J/kg-K)'})
         c_plot_data_cond.index.names = ['Temperature (C)']

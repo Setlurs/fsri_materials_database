@@ -229,8 +229,8 @@ for d in sorted((f for f in os.listdir(data_dir) if not f.startswith(".")), key=
     std_hoc = hoc_df.std(axis=1)
 
 
-    hoc_df.at['Heat of Combustion (MJ/kg)', 'Mean'] = mean_hoc
-    hoc_df.at['Heat of Combustion (MJ/kg)', 'Std. Dev.'] = std_hoc
+    hoc_df.at['Heat of Combustion (MJ/kg)', 'Mean'] = mean_hoc.at['Heat of Combustion (MJ/kg)']
+    hoc_df.at['Heat of Combustion (MJ/kg)', 'Std. Dev.'] = std_hoc.at['Heat of Combustion (MJ/kg)']
     all_col_names.append('Mean')
     all_col_names.append('Std. Dev.')
     hoc_df = hoc_df[all_col_names] # sorting HoC dataframe, using repetition numbers

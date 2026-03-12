@@ -76,9 +76,9 @@ for d in sorted((f for f in os.listdir(data_dir) if not f.startswith(".")), key=
     else: 
         continue
 
-    data_df.loc[:,'mean'] = data.groupby(by=data.columns, axis=1).mean().loc[:,'signal']
-    data_df.loc[:,'std'] = data.groupby(by=data.columns, axis=1).std(numeric_only=True).loc[:,'signal']
-    data_df.loc[:,'wavelength'] = data.groupby(by=data.columns, axis=1).mean().loc[:,'wavelength']
+    data_df.loc[:,'mean'] = data.loc[:, data.columns == 'signal'].mean(axis=1).values
+    data_df.loc[:,'std'] = data.loc[:, data.columns == 'signal'].std(axis=1).values
+    data_df.loc[:,'wavelength'] = data.loc[:, data.columns == 'wavelength'].mean(axis=1).values
 
     data_df.set_index('wavelength', inplace=True)
     plot_mean_data(data_df)

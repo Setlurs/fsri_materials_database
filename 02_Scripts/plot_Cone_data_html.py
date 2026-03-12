@@ -180,6 +180,8 @@ for d in sorted((f for f in os.listdir(data_dir) if not f.startswith(".") and f 
                 # Test Notes #
                 try:
                     pretest_notes = scalar_data_series.at['PRE TEST CMT']
+                    if not isinstance(pretest_notes, str):
+                        pretest_notes = ' '
                 except:
                     pretest_notes = ' '
                 
@@ -232,7 +234,7 @@ for d in sorted((f for f in os.listdir(data_dir) if not f.startswith(".") and f 
                 data_temp_df['THR'] = 0.25*data_temp_df['HRRPUA'].cumsum()/1000
                 data_temp_df['MLR_grad'] = -np.gradient(data_temp_df['Sample Mass'], 0.25)
                 data_temp_df['MLR'] = apply_savgol_filter(data_temp_df['MLR_grad'])
-                data_temp_df['MLR'][data_temp_df['MLR'] > 5] = 0
+                data_temp_df.loc[data_temp_df['MLR'] > 5, 'MLR'] = 0
                 # data_temp_df['MLR'] = np.zeros(len(data_temp_df['Sample Mass']))
 
                 data_temp_df['EHC'] = data_temp_df['HRR']/data_temp_df['MLR'] # kW/(g/s) -> MJ/kg
@@ -327,7 +329,7 @@ for d in sorted((f for f in os.listdir(data_dir) if not f.startswith(".") and f 
                 co_prod = (trapezoid(data_temp_df.loc[ml_10_ind:ml_90_ind,'CO Mass Flow'], x = x))*1000 # g
                 co_df.at['CO Yield (g/g)', label] = co_prod/(0.8*mass_lost)
 
-                summary_df.at['Time to Sustained Ignition (s)', label] = scalar_data_series.at['TIME TO IGN']
+                summary_df.at['Time to Sustained Ignition (s)', label] = float(scalar_data_series.at['TIME TO IGN'])
                 summary_df.at['Peak HRRPUA (kW/m2)', label] = float("{:.2f}".format(max(data_temp_df['HRRPUA'])))
                 summary_df.at['Time to Peak HRRPUA (s)', label] = data_temp_df.loc[data_temp_df['HRRPUA'].idxmax(), 'Time'] - float(scalar_data_series.at['TIME TO IGN'])
 
@@ -349,7 +351,7 @@ for d in sorted((f for f in os.listdir(data_dir) if not f.startswith(".") and f 
                 total_mass_lost = data_temp_df.at['1','Sample Mass'] - data_temp_df.at[scalar_data_series.at['END OF TEST SCAN'],'Sample Mass']
                 holder_mass = data_temp_df.at['1','Sample Mass'] - float(scalar_data_series.at['SPECIMEN MASS'])
                 summary_df.at['Avg. Effective Heat of Combustion (MJ/kg)', label] = float("{:.2f}".format(((data_temp_df.at[scalar_data_series.at['END OF TEST SCAN'],'THR'])*surf_area_m2)/(total_mass_lost/1000)))
-                summary_df.at['Initial Mass (g)', label] = scalar_data_series.at['SPECIMEN MASS']
+                summary_df.at['Initial Mass (g)', label] = float(scalar_data_series.at['SPECIMEN MASS'])
                 summary_df.at['Final Mass (g)', label] = float("{:.2f}".format(data_temp_df.at[scalar_data_series.at['END OF TEST SCAN'],'Sample Mass'] - holder_mass))
                 summary_df.at['Mass at Ignition (g)', label] = float("{:.2f}".format(data_temp_df.at[ign_index,'Sample Mass'] - holder_mass))
 
